@@ -7,9 +7,10 @@ from settings import (
     BLACK, WHITE, CYAN, YELLOW,
     PLAYER_SPEED,
 )
-from player      import Player
-from wave_manger import WaveManager
-from Hud         import HUD
+from player       import Player
+from wave_manger  import WaveManager
+from Hud          import HUD
+from save_manager import SaveManager   # <-- persistence
 
 
 
@@ -44,14 +45,15 @@ STATE_GAME_OVER = "game_over"
 
 
 def new_game():
-    """Return a fresh (player, wave_manager, bullets, pickups, score)."""
-    player       = Player()
-    wave_manager = WaveManager()
-    bullets      = []
-    pickups      = []
-    score        = 0
+    """Return a fresh (player, wave_manager, bullets, pickups, score, enemies_killed)."""
+    player         = Player()
+    wave_manager   = WaveManager()
+    bullets        = []
+    pickups        = []
+    score          = 0
+    enemies_killed = 0
     wave_manager.next_wave()
-    return player, wave_manager, bullets, pickups, score
+    return player, wave_manager, bullets, pickups, score, enemies_killed
 
 
 
@@ -64,9 +66,12 @@ def main():
 
     hud       = HUD()
     starfield = StarField()
+    save_mgr  = SaveManager()          # load persistent data on startup
 
-    state                                          = STATE_START
-    player, wave_manager, bullets, pickups, score  = new_game()
+    state                                                         = STATE_START
+    player, wave_manager, bullets, pickups, score, enemies_killed = new_game()
+
+    new_record = False   # flash "NEW RECORD!" on game-over screen
 
     running = True
     while running:
@@ -80,12 +85,14 @@ def main():
 
                 if state == STATE_START:
                     if event.key == pygame.K_RETURN:
-                        player, wave_manager, bullets, pickups, score = new_game()
+                        player, wave_manager, bullets, pickups, score, enemies_killed = new_game()
+                        new_record = False
                         state = STATE_PLAYING
 
                 elif state == STATE_GAME_OVER:
                     if event.key == pygame.K_r:
-                        player, wave_manager, bullets, pickups, score = new_game()
+                        player, wave_manager, bullets, pickups, score, enemies_killed = new_game()
+                        new_record = False
                         state = STATE_PLAYING
                     elif event.key == pygame.K_ESCAPE:
                         running = False
@@ -120,7 +127,12 @@ def main():
 
             
             wave_manager.update(bullets, pickups)
-            score += wave_manager.score_earned
+
+            # Track enemies killed via score delta
+            newly_earned = wave_manager.score_earned
+            score       += newly_earned
+            if newly_earned >= WaveManager.POINTS_ENEMY:
+                enemies_killed += newly_earned // WaveManager.POINTS_ENEMY
             wave_manager.score_earned = 0
 
             
@@ -152,6 +164,10 @@ def main():
 
             
             if not player.is_alive:
+                # ---- save progress when game ends ----
+                new_record = save_mgr.update_after_game(
+                    score, wave_manager.current_wave, enemies_killed
+                )
                 state = STATE_GAME_OVER
 
         
@@ -159,7 +175,7 @@ def main():
         starfield.draw(screen)
 
         if state == STATE_START:
-            hud.draw_start_screen(screen)
+            hud.draw_start_screen(screen, save_mgr.high_score, save_mgr.best_wave)
 
         elif state == STATE_PLAYING:
             
@@ -174,13 +190,16 @@ def main():
             player.draw(screen)
 
             
-            hud.draw(screen, player, wave_manager, score)
+            hud.draw(screen, player, wave_manager, score, save_mgr.high_score)
 
         elif state == STATE_GAME_OVER:
            
             wave_manager.draw(screen)
             player.draw(screen)
-            hud.draw_game_over_screen(screen, score, wave_manager.current_wave)
+            hud.draw_game_over_screen(
+                screen, score, wave_manager.current_wave,
+                save_mgr.high_score, save_mgr.best_wave, new_record
+            )
 
         pygame.display.flip()
         clock.tick(FPS)
