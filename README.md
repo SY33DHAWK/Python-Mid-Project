@@ -1,6 +1,3 @@
-Yoo, got it! 💯 One file, clean, infographic-style, fun but recruiter-ready. Here's your **all-in-one README.md** for **Space Shooter**—copy-paste ready:
-
-```markdown
 # 🚀 Space Shooter
 > *Retro Arcade Action • Built with Python & Pygame*
 
