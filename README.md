@@ -128,6 +128,8 @@ Reproducibility:
   - requirements.txt
   - Clear file structure + inline comments
 
+---
+
 ## 🎯 Design Philosophy
 > *"Fun first, theory second"*
 
