@@ -1,4 +1,3 @@
-```markdown
 # 🚀 Space Shooter
 > *Retro Arcade Action • Built with Python & Pygame*
 
@@ -23,7 +22,6 @@ git clone https://github.com/SY33DHAWK/Space-Shooter.git
 cd Space-Shooter
 pip install -r requirements.txt
 python main.py
-```
 
 ---
 
