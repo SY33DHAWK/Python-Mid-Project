@@ -96,9 +96,7 @@ flowchart LR
     style A fill:#4ecca3,stroke:#333
     style B fill:#6c5ce7,stroke:#333,color:white
 ```
-
----
-
+## 🛠 Tech Stack
 Core:
   - Python 3.10+
   - Pygame 2.5+ (graphics, audio, input)
@@ -107,6 +105,16 @@ Assets:
   - Pixel-art sprites (player, enemies, VFX)
   - 8-bit sound effects & background music
   - Parallax starfield background
+
+Engineering:
+  - Object-oriented Entity/Component pattern
+  - Delta-time movement (frame-rate independent)
+  - JSON-based high-score persistence
+  - Modular design for easy feature extension
+
+Reproducibility:
+  - requirements.txt
+  - Clear file structure + inline comments
 
 Engineering:
   - Object-oriented Entity/Component pattern
