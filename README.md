@@ -96,6 +96,8 @@ flowchart LR
     style A fill:#4ecca3,stroke:#333
     style B fill:#6c5ce7,stroke:#333,color:white
 ```
+---
+
 ## 🛠 Tech Stack
 Core:
   - Python 3.10+
