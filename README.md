@@ -99,8 +99,6 @@ flowchart LR
 
 ---
 
-## 🛠 Tech Stack
-```yaml
 Core:
   - Python 3.10+
   - Pygame 2.5+ (graphics, audio, input)
@@ -119,9 +117,6 @@ Engineering:
 Reproducibility:
   - requirements.txt
   - Clear file structure + inline comments
-```
-
----
 
 ## 🎯 Design Philosophy
 > *"Fun first, theory second"*
